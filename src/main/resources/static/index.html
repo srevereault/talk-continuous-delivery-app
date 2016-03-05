@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Tell me now</title>
+
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="container">
+    <div id="signin">
+        <div class="jumbotron">
+            <h1>Breizhcamp rocks !</h1>
+
+            <p class="lead">Welcome to the smartest chat room ever !</p>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input id="name" type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+            </div>
+            <p><a class="btn btn-lg btn-success" href="#" role="button" onclick="awesome.signin()">Sign in</a></p>
+        </div>
+    </div>
+
+    <div id="room" class="row hidden">
+        <div class="input-group">
+            <input id="message" type="text" class="form-control" placeholder="Tell me more...">
+                  <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="awesome.send()">Go!</button>
+              </span>
+        </div>
+    </div>
+    <div class="row">
+
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+    var awesome = {};
+
+    awesome.user = "not-set";
+    awesome.lastId = -1;
+    awesome.count = 0;
+    awesome.delay = 200;
+
+    awesome.signin = function () {
+        awesome.user = document.getElementById("name").value;
+        $('#signin').fadeOut();
+        $('#room').removeClass('hidden').fadeIn();
+        // start polling
+        setTimeout(awesome.poll, awesome.delay);
+    }
+
+    awesome.send = function () {
+        var messageHolder = document.getElementById("message");
+        $.ajax({
+            type: "POST",
+            url: "/api/messages",
+            data: JSON.stringify({owner: awesome.user, message: messageHolder.value}),
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                console.log("well done ");
+                messageHolder.value = "";
+            }
+        })
+    }
+
+    awesome.poll = function () {
+        console.log("polling...");
+        awesome.count++;
+        $.get("/api/messages?since=" + awesome.lastId).done(function (data) {
+            console.log("call #" + awesome.count + " returned " + data.length + " items");
+            $.each(data, function (index, value) {
+                var container = document.createElement("div");
+                var when = new Date(value.date);
+                container.innerHTML = '<span><b>At ' + when.getHours() + ':' + when.getMinutes() + ':' + when.getSeconds() + ' said ' + value.owner + '@' + ': </b>' + value.message + '</span>';
+                document.getElementById("room").appendChild(container);
+                awesome.lastId = value.id;
+            })
+        }).error(function () {
+            alert("Back to 90's with alerts ! BTW, we had a failure!!!");
+        })
+        setTimeout(awesome.poll, awesome.delay);
+    }
+
+    $('#message').keypress(function (e) {
+        if (e.which == '13') {
+            awesome.send();
+        }
+    });
+</script>
+</body>
+</html>
