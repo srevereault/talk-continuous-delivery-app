@@ -7,6 +7,10 @@ import startup.business.Message;
 import startup.dao.MessageDao;
 
 import javax.annotation.PostConstruct;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +30,7 @@ public class MessageServiceImpl implements MessageService {
     public void ready() {
         // tell them !
         Message message = new Message();
-        message.setOwner("system (" + System.getProperty("server.name", "default") + ")");
+        message.setOwner("system (" + System.getProperty("server.name", "local") + ")");
         message.setMessage("Now running " + gitCommit);
         send(message);
     }
@@ -47,7 +51,10 @@ public class MessageServiceImpl implements MessageService {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }
-        message.setDate(new Date());
+        LocalDateTime now = LocalDateTime.now();
+        message.setDate(now.format(DateTimeFormatter.ISO_DATE_TIME));
+
+        //message.setDateAsDate(new Date(now.toEpochMilli()));
         dao.save(message);
     }
 }

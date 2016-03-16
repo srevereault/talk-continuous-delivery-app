@@ -30,6 +30,7 @@ public class AboutResourceTest {
         Map<String, Object> about = resource.about();
 
         assertThat("Information about me can't be null", about, notNullValue());
+
         String company = (String) about.get("app.company");
         assertThat("Name of the company can't be null", company, notNullValue());
         assertThat("Local name is required to rocks the world !", company, containsString("bzh"));

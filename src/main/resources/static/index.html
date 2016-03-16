@@ -70,7 +70,7 @@
     awesome.user = "not-set";
     awesome.lastId = -1;
     awesome.count = 0;
-    awesome.delay = 200;
+    awesome.delay = 1000;
 
     awesome.signin = function () {
         awesome.user = document.getElementById("name").value;
@@ -102,7 +102,7 @@
             $.each(data, function (index, value) {
                 var container = document.createElement("div");
                 var when = new Date(value.date);
-                container.innerHTML = '<span><b>At ' + when.getHours() + ':' + when.getMinutes() + ':' + when.getSeconds() + ' said ' + value.owner + '@' + ': </b>' + value.message + '</span>';
+                container.innerHTML = '<span><b>At ' + when.getHours() + ':' + when.getMinutes() + ':' + when.getSeconds() + ' ' + value.owner + ' said: </b>' + value.message + '</span>';
                 document.getElementById("room").appendChild(container);
                 awesome.lastId = value.id;
             })

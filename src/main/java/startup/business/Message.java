@@ -1,10 +1,6 @@
 package startup.business;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -18,7 +14,11 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Date date;
+    @Column(name = "the_date")
+    private String date;
+
+//    @Column(name = "dateAsDate")
+//    private Date dateAsDate;
 
     private String owner;
 
@@ -36,11 +36,11 @@ public class Message {
         this.id = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -59,5 +59,12 @@ public class Message {
     public void setMessage(String message) {
         this.message = message;
     }
-
+//
+//    public Date getDateAsDate() {
+//        return dateAsDate;
+//    }
+//
+//    public void setDateAsDate(Date dateAsDate) {
+//        this.dateAsDate = dateAsDate;
+//    }
 }
