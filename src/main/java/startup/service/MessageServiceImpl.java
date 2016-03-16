@@ -43,6 +43,10 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void send(Message message) {
+        // sanity check
+        if (message == null) {
+            throw new IllegalArgumentException("Message cannot be null");
+        }
         message.setDate(new Date());
         dao.save(message);
     }

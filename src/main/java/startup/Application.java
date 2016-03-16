@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @SpringBootApplication
 @EnableJpaRepositories
-@PropertySource("git.properties")
+@PropertySource({"git.properties", "marketing.properties"})
 public class Application {
 
     public static void main(String[] args) {
